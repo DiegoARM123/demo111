@@ -60,7 +60,7 @@ export class HomePage {
 
     map.one(GoogleMapsEvent.MAP_READY).then(()=>{
       console.log('Map is ready!');
-      
+
       // move the map's camera to position
       map.moveCamera(position);
 
@@ -71,7 +71,6 @@ export class HomePage {
       };
       map.addMarker(markerOptions);
     });
-
 
   }
 
