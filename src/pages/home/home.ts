@@ -26,10 +26,10 @@ export class HomePage {
   ) {}
 
   ionViewDidLoad(){
-    this.obtenerPosicion();
+    this.getPosition();
   }
 
-  obtenerPosicion():any{
+  getPosition():any{
     this.geolocation.getCurrentPosition().then(response => {
       this.loadMap(response);
     })
@@ -38,10 +38,10 @@ export class HomePage {
     })
   }
 
-  loadMap(postion: Geoposition){
-    let latitude = postion.coords.latitude;
-    let longitud = postion.coords.longitude;
-    console.log(latitude, longitud);
+  loadMap(position: Geoposition){
+    let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
+    console.log(latitude, longitude);
    
     // create a new map by passing HTMLElement
     let element: HTMLElement = document.getElementById('map');
@@ -49,10 +49,10 @@ export class HomePage {
     let map: GoogleMap = this.googleMaps.create(element);
 
     // create LatLng object
-    let myPosition: LatLng = new LatLng(latitude,longitud);
+    let myPosition: LatLng = new LatLng(latitude,longitude);
 
     // create CameraPosition
-    let position: CameraPosition = {
+    let camaraPosition: CameraPosition = {
       target: myPosition,
       zoom: 18,
       tilt: 30
@@ -62,7 +62,7 @@ export class HomePage {
       console.log('Map is ready!');
 
       // move the map's camera to position
-      map.moveCamera(position);
+      map.moveCamera(camaraPosition);
 
       // create new marker
       let markerOptions: MarkerOptions = {
