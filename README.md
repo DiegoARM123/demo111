@@ -22,3 +22,5 @@ ionic cordova prepare
 ```
 
 esto es para descargar todas las dependencias del proyecto.
+
+ionic cordova plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID="AIzaSyC8XRq5g7SHVIpYIrEDAJg8dyHvMNSIfeA" --variable API_KEY_FOR_IOS="AIzaSyC8XRq5g7SHVIpYIrEDAJg8dyHvMNSIfeA"

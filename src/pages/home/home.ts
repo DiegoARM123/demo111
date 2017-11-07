@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
+import { IonicPage, NavController, Platform } from 'ionic-angular';
 
-import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import {
- GoogleMaps,
- GoogleMap,
- GoogleMapsEvent,
- LatLng,
- CameraPosition,
- MarkerOptions,
- Marker
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -19,59 +18,60 @@ import {
 })
 export class HomePage {
 
+  map: GoogleMap;
+
   constructor(
-    public navCtrl: NavController,
-    public geolocation: Geolocation,
-    public googleMaps: GoogleMaps
+    private navCtrl: NavController,
+    private googleMaps: GoogleMaps
   ) {}
 
   ionViewDidLoad(){
-    this.getPosition();
+    this.loadMap();
   }
 
-  getPosition():any{
-    this.geolocation.getCurrentPosition().then(response => {
-      this.loadMap(response);
+  loadMap(){
+
+    let mapOptions: GoogleMapOptions = {
+      camera: {
+        target: {
+          lat: 43.0741904, // default location
+          lng: -89.3809802 // default location
+        },
+        zoom: 18,
+        tilt: 30
+      }
+    };
+
+    this.map = this.googleMaps.create('map_canvas', mapOptions);
+
+    // Wait the MAP_READY before using any methods.
+    this.map.one(GoogleMapsEvent.MAP_READY)
+    .then(() => {
+      // Now you can use all methods safely.
+      this.getPosition();
     })
     .catch(error =>{
       console.log(error);
-    })
-  }
-
-  loadMap(position: Geoposition){
-    let latitude = position.coords.latitude;
-    let longitude = position.coords.longitude;
-    console.log(latitude, longitude);
-   
-    // create a new map by passing HTMLElement
-    let element: HTMLElement = document.getElementById('map');
-
-    let map: GoogleMap = this.googleMaps.create(element);
-
-    // create LatLng object
-    let myPosition: LatLng = new LatLng(latitude,longitude);
-
-    // create CameraPosition
-    let camaraPosition: CameraPosition = {
-      target: myPosition,
-      zoom: 18,
-      tilt: 30
-    };
-
-    map.one(GoogleMapsEvent.MAP_READY).then(()=>{
-      console.log('Map is ready!');
-
-      // move the map's camera to position
-      map.moveCamera(camaraPosition);
-
-      // create new marker
-      let markerOptions: MarkerOptions = {
-        position: myPosition,
-        title: 'Here'
-      };
-      map.addMarker(markerOptions);
     });
 
+  }
+
+  getPosition(): void{
+    this.map.getMyLocation()
+    .then(response => {
+      this.map.moveCamera({
+        target: response.latLng
+      });
+      this.map.addMarker({
+        title: 'My Position',
+        icon: 'blue',
+        animation: 'DROP',
+        position: response.latLng
+      });
+    })
+    .catch(error =>{
+      console.log(error);
+    });
   }
 
 }
